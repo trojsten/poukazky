@@ -2,8 +2,7 @@
 
 {% block title %}
 	Tvoja poukážka {{ block.super }}
-{% endblock %}
-
+{% endblock title %}
 
 {% block container %}
   <h1 class="text-3xl font-bold mb-6">Tvoja poukážka</h1>
@@ -11,7 +10,7 @@
   <p class="text-gray-500">Zostatok:</p>
   <p class="text-9xl font-bold flex items-baseline mb-5">
     {% if object.remaining_amount != object.original_amount or object.has_expired %}
-      <span class="line-through decoration-red-300 text-gray-400 text-8xl mr-4">{{ object.original_amount}}</span>
+      <span class="line-through decoration-red-300 text-gray-400 text-8xl mr-4">{{ object.original_amount }}</span>
     {% endif %}
     {% if object.has_expired %}
       0
@@ -68,4 +67,4 @@
   <p class="text-gray-700 text-justify">
     Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta consequuntur blanditiis consequatur placeat alias omnis voluptate ex corrupti nesciunt facilis? Nulla possimus ex eveniet animi corrupti, incidunt cumque quasi blanditiis.
   </p>
-{% endblock %}
+{% endblock container %}

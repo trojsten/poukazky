@@ -5,55 +5,96 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Provider',
+            name="Provider",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=64, unique=True)),
-                ('description', models.TextField(blank=True)),
-                ('logo', models.ImageField(blank=True, upload_to='')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=64, unique=True)),
+                ("description", models.TextField(blank=True)),
+                ("logo", models.ImageField(blank=True, upload_to="")),
             ],
             options={
-                'ordering': ['name'],
+                "ordering": ["name"],
             },
         ),
         migrations.CreateModel(
-            name='TrojstenCoupon',
+            name="TrojstenCoupon",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('code', models.CharField(max_length=16, unique=True)),
-                ('original_amount', models.PositiveIntegerField()),
-                ('remaining_amount', models.PositiveIntegerField()),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('expires_at', models.DateField()),
-                ('note', models.TextField(blank=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("code", models.CharField(max_length=16, unique=True)),
+                ("original_amount", models.PositiveIntegerField()),
+                ("remaining_amount", models.PositiveIntegerField()),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("expires_at", models.DateField()),
+                ("note", models.TextField(blank=True)),
             ],
             options={
-                'ordering': ['code'],
+                "ordering": ["code"],
             },
         ),
         migrations.CreateModel(
-            name='ExternalCoupon',
+            name="ExternalCoupon",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('code', models.CharField(max_length=64)),
-                ('amount', models.PositiveIntegerField()),
-                ('claimed_at', models.DateTimeField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('expires_at', models.DateField()),
-                ('provider', models.ForeignKey(on_delete=django.db.models.deletion.RESTRICT, to='app.provider')),
-                ('claimed_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.RESTRICT, to='app.trojstencoupon')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("code", models.CharField(max_length=64)),
+                ("amount", models.PositiveIntegerField()),
+                ("claimed_at", models.DateTimeField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("expires_at", models.DateField()),
+                (
+                    "provider",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.RESTRICT, to="app.provider"
+                    ),
+                ),
+                (
+                    "claimed_by",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.RESTRICT,
+                        to="app.trojstencoupon",
+                    ),
+                ),
             ],
             options={
-                'ordering': ['-claimed_by', '-expires_at', 'code'],
-                'constraints': [models.UniqueConstraint(models.F('code'), models.F('provider'), name='externalcoupon__code__provider__unique')],
+                "ordering": ["-claimed_by", "-expires_at", "code"],
+                "constraints": [
+                    models.UniqueConstraint(
+                        models.F("code"),
+                        models.F("provider"),
+                        name="externalcoupon__code__provider__unique",
+                    )
+                ],
             },
         ),
     ]
