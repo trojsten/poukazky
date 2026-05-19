@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load forms static %}
+
+{% block title %}
+	Vyhľadávanie {{ block.super }}
+{% endblock %}
+
+
+{% block body %}
+	<div class="flex flex-col gap-10 justify-center items-center w-full h-screen">
+		<img src="{% static "trojsten.svg" %}">
+		<form method="POST">
+			{% csrf_token %}
+
+			{% render_form form %}
+
+			<button type="submit" class="btn btn-primary mt-4">
+				Overiť
+			</button>
+		</form>
+	</div>
+{% endblock %}

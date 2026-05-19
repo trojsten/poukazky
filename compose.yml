@@ -1,0 +1,37 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+  web:
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./poukazky:/app/poukazky
+      - ./uploads:/app/uploads
+    environment:
+      - DEBUG=True
+      - DATABASE_URL=postgres://postgres:postgres@db/postgres
+    env_file:
+      - .env
+    depends_on:
+      - db
+    command: "./start.sh dev"
+
+  tailwind:
+    build:
+      context: .
+      target: cssbuild
+    volumes:
+      - ./poukazky:/app/poukazky/
+    tty: true
+
+volumes:
+  postgres_data:

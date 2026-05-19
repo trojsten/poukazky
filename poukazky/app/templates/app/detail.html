@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load forms static %}
+
+{% block title %}
+	Detail kupónu {{ block.super }}
+{% endblock %}
+
+
+{% block body %}
+	<div class="flex flex-col gap-10 justify-center items-center w-full h-screen">
+		<h1 class="text-2xl">{{ object.remaining_amount }} EUR</h1>
+
+		<span>Expirácia: {{ object.expires_at }}</span>
+
+		{% if object.has_expired %}
+			Tento kupón už expiroval
+		{% elif object.remaining_amount > 0 %}
+			<h2 class="text-xl">Vymeniť kupón</h2>
+		{% endif %}
+	</div>
+{% endblock %}
