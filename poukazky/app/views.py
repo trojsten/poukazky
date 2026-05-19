@@ -1,11 +1,14 @@
+from typing import Any
+
 from django.http import HttpResponseRedirect
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
+from django.utils.functional import cached_property
 from django.views import View
 from django.views.generic import DetailView, FormView
 
-from poukazky.app.forms import CouponSearchForm
-from poukazky.app.models import TrojstenCoupon
+from poukazky.app.forms import CouponExchangeForm, CouponSearchForm
+from poukazky.app.models import Provider, TrojstenCoupon
 
 
 class CouponSessionMixin(View):
@@ -17,6 +20,10 @@ class CouponSessionMixin(View):
             return HttpResponseRedirect(reverse("coupon_form") + f"?code={code or ''}")
 
         return super().dispatch(*args, **kwargs)
+
+    @cached_property
+    def coupon(self):
+        return get_object_or_404(TrojstenCoupon, code=self.kwargs["code"])
 
 
 class CouponFormView(FormView):
@@ -42,4 +49,33 @@ class CouponDetailView(CouponSessionMixin, DetailView):
     model = TrojstenCoupon
 
     def get_object(self, *args, **kwargs):
-        return TrojstenCoupon.objects.get(code=self.kwargs.get("code"))
+        return self.coupon
+
+    def get_available_providers(self):
+        return Provider.objects.all()
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        ctx = super().get_context_data(**kwargs)
+        ctx["providers"] = self.get_available_providers()
+        return ctx
+
+
+class CouponExchangeView(CouponSessionMixin, FormView):
+    template_name = "app/exchange.html"
+    form_class = CouponExchangeForm
+
+    @cached_property
+    def provider(self):
+        return get_object_or_404(Provider, id=self.kwargs["provider"])
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        ctx = super().get_context_data(**kwargs)
+        ctx["coupon"] = self.coupon
+        ctx["provider"] = self.provider
+        return ctx
+
+    def get_form_kwargs(self) -> dict[str, Any]:
+        kw = super().get_form_kwargs()
+        kw["provider"] = self.provider
+        kw["max_amount"] = self.coupon.remaining_amount
+        return kw

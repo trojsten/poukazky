@@ -1,21 +1,71 @@
 {% extends "base.html" %}
-{% load forms static %}
 
 {% block title %}
-	Detail kupónu {{ block.super }}
+	Tvoja poukážka {{ block.super }}
 {% endblock %}
 
 
-{% block body %}
-	<div class="flex flex-col gap-10 justify-center items-center w-full h-screen">
-		<h1 class="text-2xl">{{ object.remaining_amount }} EUR</h1>
+{% block container %}
+  <h1 class="text-3xl font-bold mb-6">Tvoja poukážka</h1>
 
-		<span>Expirácia: {{ object.expires_at }}</span>
+  <p class="text-gray-500">Zostatok:</p>
+  <p class="text-9xl font-bold flex items-baseline mb-5">
+    {% if object.remaining_amount != object.original_amount or object.has_expired %}
+      <span class="line-through decoration-red-300 text-gray-400 text-8xl mr-4">{{ object.original_amount}}</span>
+    {% endif %}
+    {% if object.has_expired %}
+      0
+    {% else %}
+      {{ object.remaining_amount }}
+    {% endif %}
+    <span class="text-7xl font-normal ml-2">€</span>
+  </p>
 
-		{% if object.has_expired %}
-			Tento kupón už expiroval
-		{% elif object.remaining_amount > 0 %}
-			<h2 class="text-xl">Vymeniť kupón</h2>
-		{% endif %}
-	</div>
+  <div class="text-gray-500 mb-8">Platnosť do: {{ object.expires_at }}</div>
+
+  <hr class="border-gray-300">
+
+  <h2 class="mt-8 text-2xl font-bold mb-6">Použiť poukážku</h2>
+
+  {% if not object.has_expired %}
+  <div class="grid grid-cols-3 gap-4 mb-6">
+    {% for provider in providers %}
+      <a class="border border-gray-300 shadow hover:bg-gray-100 rounded-md p-2 flex items-center justify-center text-2xl" href="#">
+        {% if provider.logo %}
+          <img src="{{ provider.logo.url }}" alt="{{ provider.name }}">
+        {% else %}
+          {{ provider.name }}
+        {% endif %}
+      </a>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <table class="simple-table">
+    <thead>
+      <tr>
+        <th>Obchod</th>
+        <th>Kód</th>
+        <th>Hodnota</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Alza.sk</td>
+        <td>AHOJ-POZEMSTAN</td>
+        <td>10 €</td>
+      </tr>
+      <tr>
+        <td>Alza.sk</td>
+        <td>AHOJ-POZEMSTAN</td>
+        <td>10 €</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr class="border-gray-300 my-6">
+
+  <p class="text-gray-700 text-justify">
+    Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta consequuntur blanditiis consequatur placeat alias omnis voluptate ex corrupti nesciunt facilis? Nulla possimus ex eveniet animi corrupti, incidunt cumque quasi blanditiis.
+  </p>
 {% endblock %}

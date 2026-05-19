@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load forms %}
+
+{% block title %}
+	Tvoja poukážka {{ block.super }}
+{% endblock %}
+
+{% block container %}
+  <h1 class="text-3xl font-bold mb-6">{{ provider.name }}</h1>
+  <p class="text-gray-700 text-justify mb-6">
+    {{ provider.description|urlize }}
+  </p>
+
+  <form method="POST">
+    {% csrf_token %}
+
+    {% render_form form %}
+
+    <button type="submit" class="btn btn-primary mt-4">
+      Overiť
+    </button>
+  </form>
+{% endblock container %}

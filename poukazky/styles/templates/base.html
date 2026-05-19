@@ -13,10 +13,8 @@
   </head>
   <body class="text-base-content bg-base-100" hx-headers='{"x-csrftoken": "{{ csrf_token }}"}'>
     {% block body %}
-      {% include "base/navbar.html" %}
-
       {% block outer_container %}
-      <div class="mx-auto max-w-6xl w-full p-5 pb-12">
+      <div class="mx-auto max-w-2xl p-6 w-full py-12">
         {% block container %}{% endblock %}
       </div>
       {% endblock outer_container %}
