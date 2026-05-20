@@ -29,6 +29,14 @@ class CouponSearchForm(forms.Form):
         if value is None:
             raise ValidationError("Zadaj kód!")
 
+        if value in {
+            "XXXX-XXXX-XXXX-XXXX",
+            "TROJ-STEN-TECH-TEAM",
+            "TROJ-STEN-POUK-AZKA",
+            "TROJ-STEN-POUK-AZKY",
+        }:
+            raise ValidationError("Dobrý pokus, ale zadaj prosím platný kóď")
+
         parsed = cc_validate(
             value, n_parts=settings.COUPON_PARTS, part_len=settings.COUPON_PART_LEN
         )
