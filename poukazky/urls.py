@@ -4,6 +4,7 @@ from django.conf import settings
 from django.conf.urls import include
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.auth.decorators import login_required
 from django.urls import path, register_converter
 
 
@@ -23,8 +24,11 @@ class CouponCodeConverter:
 
 register_converter(CouponCodeConverter, "code")
 
+admin.site.login = login_required(admin.site.login)  # ty:ignore[invalid-assignment]
+admin.site.site_title = admin.site.site_header = "Správa poukážok"
 
 urlpatterns = [
+    path("admin/action-forms/", include("django_admin_action_forms.urls")),
     path("admin/", admin.site.urls),
     path("", include("poukazky.users.urls")),
     path("", include("poukazky.app.urls")),

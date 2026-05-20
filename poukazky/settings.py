@@ -33,6 +33,8 @@ INSTALLED_APPS = [
     "django_tables2",
     "django_cleanup.apps.CleanupConfig",
     "mozilla_django_oidc",
+    "django_admin_action_forms",
+    "django_no_queryset_admin_actions",
     "turnstile",
 ]
 
