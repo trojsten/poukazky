@@ -28,13 +28,13 @@
     <span class="text-7xl font-normal ml-2">€</span>
   </p>
 
-  <div class="text-gray-500">Platnosť do: {{ object.expires_at }}</div>
+  <div class="text-gray-500">Platnosť do: <span{% if object.has_expired %} class="text-red-500"{% endif %}>{{ object.expires_at }}</span></div>
 
   <hr class="border-gray-300 my-8">
 
   {% if not object.has_expired and object.remaining_amount > 0 %}
     <h2 class="text-2xl font-bold mb-6">Použiť poukážku</h2>
-    <div class="grid lg:grid-cols-3 grid-cols-2 gap-4 mb-6">
+    <div class="grid md:grid-cols-3 grid-cols-2 gap-4 mb-6">
       {% for provider in providers %}
         {% if provider.available %}
           <a class="border border-gray-300 shadow hover:bg-gray-100 rounded-md p-2 flex items-center justify-center text-2xl cursor-pointer" href="{% url "coupon_exchange" object.code provider.id %}">
@@ -66,7 +66,7 @@
       {% for external_coupon in object.externalcoupon_set.all %}
         <tr>
           <td>{{ external_coupon.provider.name }}</td>
-          <td>{{ external_coupon.code }}</td>
+          <td class="font-mono">{{ external_coupon.code }}</td>
           <td>{{ external_coupon.amount }} €</td>
           <td>{{ external_coupon.user_expiration }}</td>
         </tr>

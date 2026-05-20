@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     "django_tables2",
     "django_cleanup.apps.CleanupConfig",
     "mozilla_django_oidc",
+    "turnstile",
 ]
 
 MIDDLEWARE = [
@@ -137,6 +138,9 @@ LOGGING = {
 DJANGO_TABLES2_TABLE_ATTRS = {
     "class": "simple-table",
 }
+
+TURNSTILE_SITEKEY = env("TURNSTILE_SITEKEY", "1x00000000000000000000AA")
+TURNSTILE_SECRET = env("TURNSTILE_SECRET", "1x0000000000000000000000000000000AA")
 
 COUPON_PARTS = env.int("COUPON_PARTS", 4)
 COUPON_PART_LEN = env.int("COUPON_PART_LEN", 4)

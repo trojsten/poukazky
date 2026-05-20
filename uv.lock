@@ -285,6 +285,15 @@ wheels = [
 ]
 
 [[package]]
+name = "django-turnstile"
+version = "0.1.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/cb/e5/795fc00bae0bdbf8fd72d3baa3b700174481ddd7096ba06ee4a7c1fed0af/django_turnstile-0.1.3.tar.gz", hash = "sha256:5079eb937938ba9a475c1a80c146fe1e71de025f25f3e572a911ae926bd5120d", size = 5662, upload-time = "2026-01-18T09:18:12.575Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/68/6f/8d4d5cd527d0cd42a894d51ce750dc3bae50a6cbed8294cfc870d119502a/django_turnstile-0.1.3-py3-none-any.whl", hash = "sha256:f7c82b020d5bd0fcaccb2ffac089809afb220671595c55a46a987283d7d5e61b", size = 7011, upload-time = "2026-01-18T09:18:11.486Z" },
+]
+
+[[package]]
 name = "django-types"
 version = "0.24.0"
 source = { registry = "https://pypi.org/simple" }
@@ -452,6 +461,7 @@ dependencies = [
     { name = "django-htmx" },
     { name = "django-probes" },
     { name = "django-tables2" },
+    { name = "django-turnstile" },
     { name = "django-types" },
     { name = "django-widget-tweaks" },
     { name = "environs", extra = ["django"] },
@@ -471,6 +481,7 @@ requires-dist = [
     { name = "django-htmx", specifier = ">=1.23.0" },
     { name = "django-probes", specifier = ">=1.7.0" },
     { name = "django-tables2", specifier = ">=2.7.5" },
+    { name = "django-turnstile", specifier = ">=0.1.3" },
     { name = "django-types", specifier = ">=0.20.0" },
     { name = "django-widget-tweaks", specifier = ">=1.5.0" },
     { name = "environs", extras = ["django"], specifier = ">=14.1.1" },
