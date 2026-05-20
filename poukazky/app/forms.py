@@ -23,11 +23,20 @@ class CouponSearchForm(forms.Form):
     )
     turnstile = TurnstileField(theme="light")
 
-    def clean_code(self) -> str:
-        value = self.cleaned_data.get("code")
+    # we use clean instead of clean_code, so that turnstile validation runs
+    # first and we only validate code if turnstile validation passed
+    def clean(self):
+        cleaned_data = super().clean()
+
+        value = cleaned_data["code"]
+        del cleaned_data["code"]
+
+        if "turnstile" not in cleaned_data or self.errors:
+            return cleaned_data
 
         if value is None:
-            raise ValidationError("Zadaj kód!")
+            self.add_error("code", ValidationError("Zadaj kód!"))
+            return cleaned_data
 
         if value in {
             "XXXX-XXXX-XXXX-XXXX",
@@ -35,21 +44,28 @@ class CouponSearchForm(forms.Form):
             "TROJ-STEN-POUK-AZKA",
             "TROJ-STEN-POUK-AZKY",
         }:
-            raise ValidationError("Dobrý pokus, ale zadaj prosím platný kóď")
+            self.add_error(
+                "code", ValidationError("Dobrý pokus, ale zadaj prosím platný kód")
+            )
+            return cleaned_data
 
         parsed = cc_validate(
             value, n_parts=settings.COUPON_PARTS, part_len=settings.COUPON_PART_LEN
         )
 
         if parsed == "":
-            raise ValidationError("Zadaj platný kód")
+            self.add_error("code", ValidationError("Zadaj platný kód"))
+            return cleaned_data
 
         coupon = TrojstenCoupon.objects.filter(code=parsed)
 
         if not coupon.exists():
-            raise ValidationError("Zadaj platný kód")
+            self.add_error("code", ValidationError("Zadaj platný kód"))
+            return cleaned_data
 
-        return parsed
+        cleaned_data["code"] = parsed
+
+        return cleaned_data
 
 
 class CouponExchangeForm(forms.Form):
