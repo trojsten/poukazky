@@ -10,7 +10,7 @@ COPY poukazky ./poukazky
 RUN pnpm run build
 CMD ["pnpm", "run", "watch"]
 
-FROM ghcr.io/trojsten/django-docker:v6
+FROM ghcr.io/trojsten/django-docker:v8
 
 COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-cache
