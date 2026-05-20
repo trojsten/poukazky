@@ -16,8 +16,12 @@
 
     {% render_form form %}
 
-    <button type="submit" class="btn btn-primary mt-4">
-      Overiť
+    <p class="text-gray-700 text-justify my-4 italic">
+      Vymenený kupón bude mať platnosť {{ expiration_days }} dní.
+    </p>
+
+    <button type="submit" class="btn btn-primary">
+      Vymeniť
     </button>
   </form>
 {% endblock container %}

@@ -1,5 +1,7 @@
+from django.conf import settings
 from django.db import models
 from django.utils import timezone
+from django.utils.timezone import timedelta
 
 
 class TrojstenCoupon(models.Model):
@@ -68,3 +70,9 @@ class ExternalCoupon(models.Model):
 
     def __str__(self) -> str:
         return f"{self.provider.name} / {self.code}"
+
+    @property
+    def user_expiration(self):
+        if not self.claimed_at:
+            return None
+        return (self.claimed_at + timedelta(days=settings.MIN_EXPIRATION_DAYS)).date()

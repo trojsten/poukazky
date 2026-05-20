@@ -43,7 +43,7 @@ class CouponSearchForm(forms.Form):
 
 
 class CouponExchangeForm(forms.Form):
-    amount = forms.ChoiceField(label="Hodnota")
+    amount = forms.ChoiceField(label="Dostupné hodnoty")
 
     def __init__(self, provider: Provider, max_amount: int, **kwargs):
         super().__init__(**kwargs)
