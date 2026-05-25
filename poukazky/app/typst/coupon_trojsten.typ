@@ -7,12 +7,6 @@
 
 #let semibold = text.with(weight: "semibold")
 
-// #let ctx = (
-//   (amount: 10, code: "9X9E-AYL7-3CTF-RG8T"),
-//   (amount: 20, code: "GCAJ-MDA3-BNN7-G9QB"),
-//   (amount: 30, code: "AJG7-REJY-A9FM-BQ4J"),
-// )
-
 #let ctx = json(bytes(sys.inputs.context))
 
 #let out = ()
@@ -81,11 +75,9 @@
 
 #table(
   columns: 1fr,
-  rows: 33.33333%,
-  stroke: (x, y) => (
-    top: if calc.rem(y, 3) != 0 {(thickness: 0.5pt, paint: luma(0), dash: "dashed")},
-    rest: 0pt
-  ),
+  rows: (100% - 4mm) / 3,
+  row-gutter: 2mm,
+  stroke: 0pt,
   align: center + horizon,
   inset: -1pt,
   ..out
