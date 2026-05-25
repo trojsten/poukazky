@@ -49,6 +49,11 @@ class CouponSearchForm(forms.Form):
             )
             return cleaned_data
 
+        value = [
+            c for c in value if c.lower() in "1234567890qwertyuiopasdfghjklzxcvbnm"
+        ]
+        value = "-".join("".join(value[i : i + 4]) for i in range(0, len(value), 4))
+
         parsed = cc_validate(
             value, n_parts=settings.COUPON_PARTS, part_len=settings.COUPON_PART_LEN
         )
