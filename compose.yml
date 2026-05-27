@@ -16,7 +16,7 @@ services:
     volumes:
       - ./poukazky:/app/poukazky
       - ./uploads:/app/uploads
-    environment:
+    environment: &env
       - DEBUG=True
       - DATABASE_URL=postgres://postgres:postgres@db/postgres
     env_file:
@@ -24,6 +24,19 @@ services:
     depends_on:
       - db
     command: "./start.sh dev"
+
+  worker:
+    build:
+      context: .
+    volumes:
+      - ./poukazky:/app/poukazky
+      - ./uploads:/app/uploads
+    environment: *env
+    env_file:
+      - .env
+    depends_on:
+      - db
+    command: "python manage.py rqworker"
 
   tailwind:
     build:
