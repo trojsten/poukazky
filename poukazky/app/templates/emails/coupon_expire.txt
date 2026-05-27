@@ -6,7 +6,7 @@ Ahoj,
 Nasledujúce poukážky poskytovatelov expirujú čoskoro:
 
 {% for coupon in coupons %}
-  - {{ coupon.amount }} {{ coupon.provider.name }}: expiruje {{ coupon.expires_at }}
+  - {{ coupon.provider.name }} v hodnote {{ coupon.amount }}€ expiruje {{ coupon.expires_at }}
 {% endfor %}
 
 {% endblock content %}

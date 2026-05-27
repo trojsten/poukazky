@@ -3,6 +3,6 @@
 {% block content %}
 Ahoj,
 
-Trojsten poukážka {{ coupon.claimed_by.code }} bola vymenená za poukážku {{ coupon.provider.name }} v hodnote {{ coupon.amount }}.
+Trojsten poukážka {{ coupon.claimed_by.code }} bola vymenená za poukážku {{ coupon.provider.name }} v hodnote {{ coupon.amount }}€.
 
 {% endblock content %}
