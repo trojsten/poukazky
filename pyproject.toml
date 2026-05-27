@@ -22,6 +22,8 @@ dependencies = [
     "typst>=0.14.9",
     "django-admin-action-forms>=2.2.1",
     "django-no-queryset-admin-actions>=1.2.1",
+    "django-rq>=4.1.0",
+    "mjml-python>=1.4.0",
 ]
 
 [tool.ruff.lint]

@@ -14,6 +14,7 @@ from django.views.generic import DetailView, FormView
 
 from poukazky.app.forms import CouponExchangeForm, CouponSearchForm
 from poukazky.app.models import ExternalCoupon, Provider, TrojstenCoupon
+from poukazky.app.tasks import coupon_exchanged
 
 
 class CouponSessionMixin(View):
@@ -131,5 +132,7 @@ class CouponExchangeView(CouponSessionMixin, FormView):
 
             external_coupon.save()
             self.coupon.save()
+
+            coupon_exchanged.delay(external_coupon.id)
 
         return redirect("coupon_detail", code=self.coupon.code)

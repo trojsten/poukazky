@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "mozilla_django_oidc",
     "django_admin_action_forms",
     "django_no_queryset_admin_actions",
+    "django_rq",
     "turnstile",
 ]
 
@@ -93,6 +94,18 @@ OIDC_RENEW_ID_TOKEN_EXPIRY_SECONDS = 3600  # 1-hour
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
+
+EMAIL_CONFIG = env.dj_email_url("EMAIL_URL", default="consolemail://")
+vars().update(EMAIL_CONFIG)
+
+RQ_QUEUES = {
+    "default": {
+        "HOST": env("REDIS_HOST", default="redis"),
+        "PORT": 6379,
+        "ASYNC": not DEBUG,
+    },
+}
+
 LANGUAGE_CODE = "sk-sk"
 TIME_ZONE = "Europe/Bratislava"
 USE_I18N = True
@@ -146,6 +159,7 @@ TURNSTILE_SECRET = env("TURNSTILE_SECRET", "1x0000000000000000000000000000000AA"
 
 COUPON_PARTS = env.int("COUPON_PARTS", 4)
 COUPON_PART_LEN = env.int("COUPON_PART_LEN", 4)
+COUPON_ADMINS = env.list("COUPON_ADMINS", default=[])
 MIN_EXPIRATION_DAYS = 7
 
 

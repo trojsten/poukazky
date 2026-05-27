@@ -1,0 +1,15 @@
+{% extends "emails/base_email.html" %}
+
+{% block content %}
+<mj-text padding-bottom="0px" line-height="1.3">
+  <p>Ahoj,</p>
+
+  <p>Nasledujúce poukážky poskytovatelov expirujú čoskoro:</p>
+
+  <ul>
+  {% for coupon in coupons %}
+    <li>{{ coupon.amount }} {{ coupon.provider.name }}: expiruje {{ coupon.expires_at }}</li>
+  {% endfor %}
+  </ul>
+</mj-text>
+{% endblock content %}
