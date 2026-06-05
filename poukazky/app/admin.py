@@ -25,7 +25,7 @@ class GenerateCouponForm(AdminActionForm):
 
 class BulkUpdateCouponForm(AdminActionForm):
     expires_at = forms.DateField(label="Expirácia poukážok")
-    note = forms.CharField(label="Poznámka", widget=forms.Textarea())
+    note = forms.CharField(label="Poznámka", widget=forms.Textarea(), required=False)
 
 
 @admin.register(TrojstenCoupon)
