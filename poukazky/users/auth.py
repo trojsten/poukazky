@@ -1,6 +1,10 @@
+from django.contrib.auth.models import Group
 from mozilla_django_oidc.auth import OIDCAuthenticationBackend
 
 from .models import User
+
+ADMIN_OIDC_GROUP = "poukazky@iam.trojsten.sk"
+ADMIN_DJANGO_GROUP = "admin"
 
 
 def logout_url(request):
@@ -33,3 +37,12 @@ class TrojstenID(OIDCAuthenticationBackend):
         user.username = claims.get("preferred_username")
         user.first_name = claims.get("given_name", "")
         user.last_name = claims.get("family_name", "")
+
+        oidc_groups = claims.get("groups", [])
+        is_admin = ADMIN_OIDC_GROUP in oidc_groups
+        user.is_staff = is_admin
+
+        if is_admin:
+            admin_group, _ = Group.objects.get_or_create(name=ADMIN_DJANGO_GROUP)
+            user.save()  # when creating user, he will not exist at this time, so we need to save him.
+            user.groups.add(admin_group)

@@ -85,7 +85,7 @@ OIDC_OP_JWKS_ENDPOINT = "https://id.trojsten.sk/oauth/.well-known/jwks.json"
 OIDC_OP_AUTHORIZATION_ENDPOINT = "https://id.trojsten.sk/oauth/authorize/"
 OIDC_OP_USER_ENDPOINT = "https://id.trojsten.sk/oauth/userinfo/"
 OIDC_OP_TOKEN_ENDPOINT = "https://id.trojsten.sk/oauth/token/"
-OIDC_RP_SCOPES = "openid email profile"
+OIDC_RP_SCOPES = "openid email profile groups"
 OIDC_RP_SIGN_ALGO = "RS256"
 OIDC_RP_CLIENT_ID = env("OIDC_RP_CLIENT_ID", default="")
 OIDC_RP_CLIENT_SECRET = env("OIDC_RP_CLIENT_SECRET", default="")
