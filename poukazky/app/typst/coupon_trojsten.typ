@@ -69,7 +69,7 @@
         ]
       ))
 
-      V prípade akýchkoľvek otázok alebo pripomienok nám napíš na *poukazky@trojsten.sk*.
+      V prípade akýchkoľvek otázok alebo pripomienok nám napíš na *poukazky\@trojsten.sk*.
     ])
   }
 }
