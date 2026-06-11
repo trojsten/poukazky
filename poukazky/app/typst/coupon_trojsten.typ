@@ -44,8 +44,8 @@
     out.push(box(width: 80%)[
       = Trojsten poukážka
 
-      Túto poukážku si vieš vymeniť za poukážku do jedného z populárnych obchodov#super[1] podľa tvojho výberu do dátumu jej expirácie.
-      Viac informácií nájdeš na stránke:
+      Túto poukážku nevieš priamo uplatniť v obchode, no vieš si ju #semibold[vymeniť] za poukážky, ktoré sa použiť dajú.
+      Momentálne si môžeš vybrať medzi poukážkami do #semibold[iHRYska], #semibold[Martinusu] a #semibold[Alzy].
 
       #pad(7.5mm, grid(
         columns: 3,
@@ -61,14 +61,15 @@
           align(horizon + center, line(length: 100%, stroke: (paint: luma(100), thickness: 1pt, dash: "dotted")))
         ))),
         [
-          Choď na *poukazky.trojsten.sk* a zadaj kód:
+          Choď čo najskôr na *poukazky.trojsten.sk* a zadaj kód:
 
           #text(font: "Source Code Pro", weight: "semibold", size: 1.2em, d.code)
+
+          Tak zistíš, že akú má Tvoja poukážka expiráciu, t. j. do kedy si ju vieš vymeniť.
         ]
       ))
 
-      #set text(fill: luma(100))
-      #super[1] Aktuálne to zahŕňa #semibold[Alzu], #semibold[Martinus] a #semibold[iHRYsko], ale dostupné poukážky sa môžu časom meniť.
+      V prípade akýchkoľvek otázok alebo pripomienok nám napíš na #semibold[poukazky\@trojsten.sk].
     ])
   }
 }
