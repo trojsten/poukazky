@@ -44,8 +44,8 @@
     out.push(box(width: 80%)[
       = Trojsten poukážka
 
-      Túto poukážku nevieš priamo uplatniť v obchode, no vieš si ju vymeniť za poukážky, ktoré sa použiť dajú.
-      Momentálne si môžeš vybrať medzi poukážkami do iHRYska, Martinusu a Alzy.
+      Túto poukážku nevieš priamo uplatniť v obchode, no vieš si ju #semibold[vymeniť] za poukážky, ktoré sa použiť dajú.
+      Momentálne si môžeš vybrať medzi poukážkami do #semibold[iHRYska], #semibold[Martinusu] a #semibold[Alzy].
 
       #pad(7.5mm, grid(
         columns: 3,
@@ -69,7 +69,7 @@
         ]
       ))
 
-      V prípade akýchkoľvek otázok alebo pripomienok nám napíš na poukazky@trojsten.sk
+      V prípade akýchkoľvek otázok alebo pripomienok nám napíš na *poukazky@trojsten.sk*.
     ])
   }
 }
