@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import date
 
 from coupon_codes.coupon_codes import cc_generate
 from django.conf import settings
@@ -116,9 +116,3 @@ class ExternalCoupon(models.Model):
 
     def __str__(self) -> str:
         return f"{self.provider.name} / {self.code}"
-
-    @property
-    def user_expiration(self):
-        if not self.claimed_at:
-            return None
-        return (self.claimed_at + timedelta(days=settings.MIN_EXPIRATION_DAYS)).date()

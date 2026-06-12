@@ -53,30 +53,39 @@
 
   <h2 class="text-2xl font-bold mb-6">Vymenené poukážky</h2>
 
-  <table class="simple-table">
-    <thead>
-      <tr>
-        <th>Obchod</th>
-        <th>Kód</th>
-        <th>Hodnota</th>
-        <th>Expirácia</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for external_coupon in object.externalcoupon_set.all %}
+  {% if object.externalcoupon_set.all %}
+    <table class="simple-table">
+      <thead>
         <tr>
-          <td>{{ external_coupon.provider.name }}</td>
-          <td class="font-mono">{{ external_coupon.code }}</td>
-          <td>{{ external_coupon.amount }} €</td>
-          <td>{{ external_coupon.user_expiration }}</td>
+          <th>Obchod</th>
+          <th>Kód</th>
+          <th>Hodnota</th>
+          <th>Expirácia</th>
         </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        {% for external_coupon in object.externalcoupon_set.all %}
+          <tr>
+            <td>{{ external_coupon.provider.name }}</td>
+            <td class="font-mono">{{ external_coupon.code }}</td>
+            <td>{{ external_coupon.amount }} €</td>
+            <td>{{ external_coupon.expires_at }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="italic">Tu uvidíš svoje vymenené poukážky.</p>
+  {% endif %}
 
   <hr class="border-gray-300 my-6">
 
-  <p class="text-gray-700 text-justify">
-    Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta consequuntur blanditiis consequatur placeat alias omnis voluptate ex corrupti nesciunt facilis? Nulla possimus ex eveniet animi corrupti, incidunt cumque quasi blanditiis.
-  </p>
+  <div class="text-gray-700 text-justify space-y-2">
+    <p>
+      Svoj kód z Trojsten poukážky si vieš vymeniť za kódy, ktoré môžeš uplatniť v e-shopoch alebo kamenných predajniach Alzy, Martinusu alebo iHRYska. Každý kód, ktorý získaš, má garantovanú platnosť aspoň 7 dní, väčšinou to však je viac ;)
+    </p>
+    <p>
+      Ak sa ti náhodou stane, že niektoré poukážky nebudú k dispozícii, alebo budeš mať akékoľvek otázky či pripomienky, kedykoľvek nám napíš na <a class="link" href="mailto:poukazky@trojsten.sk">poukazky@trojsten.sk</a>.
+    </p>
+  </div>
 {% endblock container %}
