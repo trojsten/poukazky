@@ -1,3 +1,5 @@
+from typing import Iterable
+
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
@@ -6,7 +8,7 @@ from poukazky.app.models import TrojstenCoupon
 from poukazky.app.render_typst import render_typst
 
 
-def generate_coupons(coupons: list[TrojstenCoupon]) -> bytes:
+def generate_coupons(coupons: Iterable[TrojstenCoupon]) -> bytes:
     ctx = {}
 
     ctx["coupons"] = [

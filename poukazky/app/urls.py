@@ -1,6 +1,11 @@
 from django.urls import path
 
-from poukazky.app.views import CouponDetailView, CouponExchangeView, CouponFormView
+from poukazky.app.views import (
+    CouponDetailView,
+    CouponExchangeView,
+    CouponFormView,
+    CouponPDFView,
+)
 
 urlpatterns = [
     path("", CouponFormView.as_view(), name="coupon_form"),
@@ -9,5 +14,10 @@ urlpatterns = [
         "<code:code>/exchange/<int:provider>/",
         CouponExchangeView.as_view(),
         name="coupon_exchange",
+    ),
+    path(
+        "download_pdf/<job_id>/",
+        CouponPDFView.as_view(),
+        name="coupon_pdf_download",
     ),
 ]
