@@ -1,9 +1,12 @@
 from typing import Any
 
+import django_rq
 from django.conf import settings
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.core.files.storage import default_storage
 from django.db import transaction
 from django.db.models import Exists, OuterRef
-from django.http import HttpResponseRedirect
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
@@ -11,6 +14,8 @@ from django.utils.functional import cached_property
 from django.utils.timezone import timedelta
 from django.views import View
 from django.views.generic import DetailView, FormView
+from rq.exceptions import NoSuchJobError
+from rq.job import Job, JobStatus
 
 from poukazky.app.forms import CouponExchangeForm, CouponSearchForm
 from poukazky.app.models import ExternalCoupon, Provider, TrojstenCoupon
@@ -136,3 +141,23 @@ class CouponExchangeView(CouponSessionMixin, FormView):
             coupon_exchanged.delay(external_coupon.id)
 
         return redirect("coupon_detail", code=self.coupon.code)
+
+
+class CouponPDFView(PermissionRequiredMixin, View):
+    permission_required = "app.create_trojstencoupon"
+
+    def get(self, request, *args, **kwargs):
+        conn = django_rq.get_connection()
+        try:
+            job = Job.fetch(kwargs["job_id"], conn)
+            if job.func_name != "poukazky.app.tasks.generate_coupons_pdf":
+                raise Http404()
+        except NoSuchJobError:
+            raise Http404()
+
+        if job.get_status() != JobStatus.FINISHED:
+            resp = HttpResponse("Rendering...")
+            resp.headers["Refresh"] = 5
+            return resp
+
+        return HttpResponseRedirect(default_storage.url(job.result))

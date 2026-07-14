@@ -3,16 +3,19 @@ import csv
 from django import forms
 from django.contrib import admin, messages
 from django.db import IntegrityError, transaction
+from django.db.models import QuerySet
 from django.forms import ValidationError
-from django.http import HttpResponse
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 from django_admin_action_forms.admin import AdminActionFormsMixin
 from django_admin_action_forms.decorators import action_with_form
 from django_admin_action_forms.forms import AdminActionForm
 from django_no_queryset_admin_actions.admin import NoQuerySetAdminActionsMixin
 from django_no_queryset_admin_actions.decorators import no_queryset_action
+from rq.job import Job
 
 from poukazky.app.models import ExternalCoupon, Provider, TrojstenCoupon
-from poukazky.app.utils import generate_coupons
+from poukazky.app.tasks import generate_coupons_pdf
 
 
 class GenerateCouponForm(AdminActionForm):
@@ -59,30 +62,22 @@ class TrojstenCouponAdmin(
     def generate_coupon(self, request, data):
         with transaction.atomic():
             coupons = [
-                TrojstenCoupon.generate(data["amount"], data["expires_at"])
+                TrojstenCoupon.generate(data["amount"], data["expires_at"]).id
                 for _ in range(data["count"])
             ]
 
-        output = generate_coupons(coupons)
-
-        return HttpResponse(
-            output,
-            content_type="application/pdf",
-            headers={
-                "Content-Disposition": 'attachment; filename="trojsten-poukazky.pdf"'
-            },
+        job: Job = generate_coupons_pdf.delay(coupons)  # type:ignore
+        return HttpResponseRedirect(
+            reverse("coupon_pdf_download", kwargs={"job_id": job.id})
         )
 
     @admin.display(description="Vygenerovať PDF označených poukážok")
-    def regenerate_coupons(self, request, queryset):
-        output = generate_coupons(queryset.all())
-
-        return HttpResponse(
-            output,
-            content_type="application/pdf",
-            headers={
-                "Content-Disposition": 'attachment; filename="trojsten-poukazky.pdf"'
-            },
+    def regenerate_coupons(self, request, queryset: QuerySet[TrojstenCoupon]):
+        job: Job = generate_coupons_pdf.delay(
+            list(queryset.values_list("id", flat=True))
+        )  # type:ignore
+        return HttpResponseRedirect(
+            reverse("coupon_pdf_download", kwargs={"job_id": job.id})
         )
 
     @action_with_form(
