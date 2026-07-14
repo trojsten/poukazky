@@ -26,7 +26,7 @@ def generate_coupons_pdf(coupon_ids: list[int]) -> str:
     coupons = TrojstenCoupon.objects.filter(id__in=coupon_ids)
     pdf_bytes = generate_coupons(coupons)
 
-    filename = f"tmp_coupons/{secrets.token_hex(8)}.pdf"
+    filename = f"tmp_coupons/{secrets.token_hex(32)}.pdf"
     default_storage.save(filename, BytesIO(pdf_bytes))
     cleanup_coupon_pdfs.delay()
     return filename
