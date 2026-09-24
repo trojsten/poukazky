@@ -1,0 +1,15 @@
+{% extends "emails/base_email.html" %}
+
+{% block content %}
+<mj-text padding-bottom="0px" line-height="1.3">
+  <p>Ahoj,</p>
+
+  <p>Nasledujúci poskytovatelia majú nedostatok poukážok:</p>
+
+  <ul>
+  {% for provider in providers %}
+    <li>{{ provider.name }} má {{ provider.valid_coupon_cnt }} poukážok (požadovaných: {{ provider.coupon_alert_threshold }})</li>
+  {% endfor %}
+  </ul>
+</mj-text>
+{% endblock content %}
