@@ -40,6 +40,12 @@
           <a class="border border-gray-300 shadow hover:bg-gray-100 rounded-md p-2 flex items-center justify-center text-2xl cursor-pointer" href="{% url "coupon_exchange" object.code provider.id %}">
             {% partial provider %}
           </a>
+        {% elif provider.forbidden %}
+          <span class="border flex-col border-gray-300 shadow bg-gray-100 grayscale rounded-md p-2 flex items-center justify-between text-2xl cursor-not-allowed">
+            <span></span>
+            {% partial provider %}
+            <span class="text-sm text-center">nepoužiteľné s touto poukážkou</span>
+          </span>
         {% else %}
           <span class="border flex-col border-gray-300 shadow bg-gray-100 grayscale rounded-md p-2 flex items-center justify-between text-2xl cursor-not-allowed">
             <span></span>
