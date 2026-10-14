@@ -1,0 +1,12 @@
+{% extends "emails/base_email.txt" %}
+
+{% block content %}
+Ahoj,
+
+Nasledujúci poskytovatelia majú nedostatok poukážok:
+
+{% for provider in providers %}
+  - {{ provider.name }} má {{ provider.valid_coupon_cnt }} poukážok (požadovaných: {{ provider.coupon_alert_threshold }})
+{% endfor %}
+
+{% endblock content %}

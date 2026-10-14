@@ -66,6 +66,13 @@ class Provider(models.Model):
 
     logo = models.ImageField(blank=True, verbose_name="logo")
 
+    coupon_alert_threshold = models.PositiveIntegerField(
+        blank=True,
+        null=True,
+        verbose_name="upozorniť, ak je menej ako",
+        help_text="Ak je poukážok tohto poskytovateľa menej ako toto číslo, pošle sa upozornenie na email administrátora. Ak je prázdne, upozornenie sa neposiela.",
+    )
+
     class Meta:
         verbose_name = "poskytovateľ"
         verbose_name_plural = "poskytovatelia"
