@@ -26,6 +26,14 @@ class TrojstenCoupon(models.Model):
 
     note = models.TextField(blank=True, verbose_name="poznámka")
 
+    forbidden_providers = models.ManyToManyField(
+        "Provider",
+        blank=True,
+        verbose_name="zakázaní poskytovatelia",
+        help_text="Poukážka sa nebud dať vymeniť za poukážku od týchto poskytovateľov.",
+        related_name="forbidden_for_coupons",
+    )
+
     class Meta:
         verbose_name = "Trojsten poukážka"
         verbose_name_plural = "Trojsten poukážky"
@@ -41,7 +49,11 @@ class TrojstenCoupon(models.Model):
         return timezone.now().date() > self.expires_at
 
     @classmethod
-    def generate(cls, amount: int, expires_at: date):
+    def generate(
+        cls,
+        amount: int,
+        expires_at: date,
+    ) -> "TrojstenCoupon":
         while True:
             code = cc_generate(
                 n_parts=settings.COUPON_PARTS, part_len=settings.COUPON_PART_LEN

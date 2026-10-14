@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.files.storage import default_storage
 from django.db import transaction
-from django.db.models import Exists, OuterRef
+from django.db.models import Exists, OuterRef, Q
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
@@ -82,8 +82,8 @@ class CouponDetailView(CouponSessionMixin, DetailView):
                     amount__lte=self.coupon.remaining_amount,
                     expires_at__gte=expiration,
                 )
-            )
-        )
+            ),
+        ).exclude(forbidden_for_coupons=self.coupon)
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         ctx = super().get_context_data(**kwargs)
@@ -97,7 +97,10 @@ class CouponExchangeView(CouponSessionMixin, FormView):
 
     @cached_property
     def provider(self):
-        return get_object_or_404(Provider, id=self.kwargs["provider"])
+        return get_object_or_404(
+            Provider,
+            Q(id=self.kwargs["provider"]) & ~Q(forbidden_for_coupons=self.coupon),
+        )
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         ctx = super().get_context_data(**kwargs)
@@ -118,7 +121,7 @@ class CouponExchangeView(CouponSessionMixin, FormView):
         )
 
         with transaction.atomic():
-            external_coupon: ExternalCoupon = (
+            external_coupon: ExternalCoupon | None = (
                 ExternalCoupon.objects.filter(
                     provider=self.provider,
                     claimed_by=None,
@@ -129,6 +132,13 @@ class CouponExchangeView(CouponSessionMixin, FormView):
                 .select_for_update()
                 .first()
             )
+
+            if not external_coupon:
+                form.add_error(
+                    None,
+                    "Požadovaná poukážka už nie je dostupná.",
+                )
+                return self.form_invalid(form)
 
             external_coupon.claimed_by = self.coupon
             external_coupon.claimed_at = timezone.now()

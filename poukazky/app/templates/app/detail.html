@@ -1,91 +1,103 @@
 {% extends "base.html" %}
 
 {% block title %}
-  Tvoja poukážka {{ block.super }}
+    Tvoja poukážka {{ block.super }}
 {% endblock title %}
 
 {% partialdef provider %}
-  {% if provider.logo %}
-    <img src="{{ provider.logo.url }}" alt="{{ provider.name }}">
-  {% else %}
-    {{ provider.name }}
-  {% endif %}
+    {% if provider.logo %}
+        <img src="{{ provider.logo.url }}" alt="{{ provider.name }}">
+    {% else %}
+        {{ provider.name }}
+    {% endif %}
 {% endpartialdef %}
 
 {% block container %}
-  <h1 class="text-3xl font-bold mb-6">Tvoja poukážka</h1>
+    <h1 class="text-3xl font-bold mb-6">Tvoja poukážka</h1>
 
-  <p class="text-gray-500">Zostatok:</p>
-  <p class="text-9xl font-bold flex items-baseline mb-5">
-    {% if object.remaining_amount != object.original_amount or object.has_expired %}
-      <span class="line-through decoration-red-300 text-gray-400 text-8xl mr-4">{{ object.original_amount }}</span>
-    {% endif %}
-    {% if object.has_expired %}
-      0
-    {% else %}
-      {{ object.remaining_amount }}
-    {% endif %}
-    <span class="text-7xl font-normal ml-2">€</span>
-  </p>
-
-  <div class="text-gray-500">Platnosť do: <span{% if object.has_expired %} class="text-red-500"{% endif %}>{{ object.expires_at }}</span></div>
-
-  <hr class="border-gray-300 my-8">
-
-  {% if not object.has_expired and object.remaining_amount > 0 %}
-    <h2 class="text-2xl font-bold mb-6">Použiť poukážku</h2>
-    <div class="grid md:grid-cols-3 grid-cols-2 gap-4 mb-6">
-      {% for provider in providers %}
-        {% if provider.available %}
-          <a class="border border-gray-300 shadow hover:bg-gray-100 rounded-md p-2 flex items-center justify-center text-2xl cursor-pointer" href="{% url "coupon_exchange" object.code provider.id %}">
-            {% partial provider %}
-          </a>
+    <p class="text-gray-500">Zostatok:</p>
+    <p class="text-9xl font-bold flex items-baseline mb-5">
+        {% if object.remaining_amount != object.original_amount or object.has_expired %}
+            <span class="line-through decoration-red-300 text-gray-400 text-8xl mr-4">{{ object.original_amount }}</span>
+        {% endif %}
+        {% if object.has_expired %}
+            0
         {% else %}
-          <span class="border flex-col border-gray-300 shadow bg-gray-100 grayscale rounded-md p-2 flex items-center justify-between text-2xl cursor-not-allowed">
+            {{ object.remaining_amount }}
+        {% endif %}
+        <span class="text-7xl font-normal ml-2">€</span>
+    </p>
+
+    <div class="text-gray-500">Platnosť do: <span{% if object.has_expired %}
+        class="text-red-500"{% endif %}>{{ object.expires_at }}</span></div>
+
+    <hr class="border-gray-300 my-8">
+
+    {% if not object.has_expired and object.remaining_amount > 0 %}
+        <h2 class="text-2xl font-bold mb-6">Použiť poukážku</h2>
+        <div class="grid md:grid-cols-3 grid-cols-2 gap-4 mb-6">
+            {% for provider in providers %}
+                {% if provider.available %}
+                    <a class="border border-gray-300 shadow hover:bg-gray-100 rounded-md p-2 flex items-center justify-center text-2xl cursor-pointer"
+                       href="{% url "coupon_exchange" object.code provider.id %}">
+                        {% partial provider %}
+                    </a>
+                {% else %}
+                    <span class="border flex-col border-gray-300 shadow bg-gray-100 grayscale rounded-md p-2 flex items-center justify-between text-2xl cursor-not-allowed">
             <span></span>
             {% partial provider %}
             <span class="text-sm text-center">momentálne nedostupné</span>
           </span>
-        {% endif %}
-      {% endfor %}
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <h2 class="text-2xl font-bold mb-6">Vymenené poukážky</h2>
+
+    {% if object.externalcoupon_set.all %}
+        <table class="simple-table">
+            <thead>
+            <tr>
+                <th>Obchod</th>
+                <th>Kód</th>
+                <th>Hodnota</th>
+                <th>Expirácia</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for external_coupon in object.externalcoupon_set.all %}
+                <tr>
+                    <td>{{ external_coupon.provider.name }}</td>
+                    <td class="font-mono">{{ external_coupon.code }}</td>
+                    <td>{{ external_coupon.amount }} €</td>
+                    <td>{{ external_coupon.expires_at }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="italic">Tu uvidíš svoje vymenené poukážky.</p>
+    {% endif %}
+
+    <hr class="border-gray-300 my-6">
+
+    <div class="text-gray-700 text-justify space-y-2">
+        <p>
+            Svoj kód z Trojsten poukážky si vieš vymeniť za kódy, ktoré môžeš uplatniť v e-shopoch alebo kamenných
+            predajniach
+        {% if providers|length > 1 %}
+            obchodov
+            {% for provider in providers %}
+                {{ provider.name }}{% if forloop.revcounter0 == 1 %} alebo
+                {% elif not forloop.last %}, {% endif %}{% endfor %}{% else %}
+            obchodu {{ providers.first.name }}{% endif %}. Každý kód, ktorý získaš, má garantovanú platnosť
+            aspoň 7 dní, väčšinou to však je viac ;)
+        </p>
+        <p>
+            Ak sa ti náhodou stane, že niektoré poukážky nebudú k dispozícii, alebo budeš mať akékoľvek otázky či
+            pripomienky, kedykoľvek nám napíš na <a class="link"
+                                                    href="mailto:poukazky@trojsten.sk">poukazky@trojsten.sk</a>.
+        </p>
     </div>
-  {% endif %}
-
-  <h2 class="text-2xl font-bold mb-6">Vymenené poukážky</h2>
-
-  {% if object.externalcoupon_set.all %}
-    <table class="simple-table">
-      <thead>
-        <tr>
-          <th>Obchod</th>
-          <th>Kód</th>
-          <th>Hodnota</th>
-          <th>Expirácia</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for external_coupon in object.externalcoupon_set.all %}
-          <tr>
-            <td>{{ external_coupon.provider.name }}</td>
-            <td class="font-mono">{{ external_coupon.code }}</td>
-            <td>{{ external_coupon.amount }} €</td>
-            <td>{{ external_coupon.expires_at }}</td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  {% else %}
-    <p class="italic">Tu uvidíš svoje vymenené poukážky.</p>
-  {% endif %}
-
-  <hr class="border-gray-300 my-6">
-
-  <div class="text-gray-700 text-justify space-y-2">
-    <p>
-      Svoj kód z Trojsten poukážky si vieš vymeniť za kódy, ktoré môžeš uplatniť v e-shopoch alebo kamenných predajniach Alzy, Martinusu alebo iHRYska. Každý kód, ktorý získaš, má garantovanú platnosť aspoň 7 dní, väčšinou to však je viac ;)
-    </p>
-    <p>
-      Ak sa ti náhodou stane, že niektoré poukážky nebudú k dispozícii, alebo budeš mať akékoľvek otázky či pripomienky, kedykoľvek nám napíš na <a class="link" href="mailto:poukazky@trojsten.sk">poukazky@trojsten.sk</a>.
-    </p>
-  </div>
 {% endblock container %}
