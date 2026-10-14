@@ -28,7 +28,6 @@ admin.site.login = login_required(admin.site.login)  # ty:ignore[invalid-assignm
 admin.site.site_title = admin.site.site_header = "Správa poukážok"
 
 urlpatterns = [
-    path("admin/action-forms/", include("django_admin_action_forms.urls")),
     path("admin/", admin.site.urls),
     path("", include("poukazky.users.urls")),
     path("", include("poukazky.app.urls")),
