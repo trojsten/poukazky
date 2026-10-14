@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.files.storage import default_storage
 from django.db import transaction
-from django.db.models import Exists, OuterRef
+from django.db.models import Exists, OuterRef, Q
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
@@ -82,7 +82,8 @@ class CouponDetailView(CouponSessionMixin, DetailView):
                     amount__lte=self.coupon.remaining_amount,
                     expires_at__gte=expiration,
                 )
-            )
+            ),
+            forbidden=Exists(self.coupon.forbidden_providers.filter(pk=OuterRef("pk"))),
         )
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
@@ -97,7 +98,10 @@ class CouponExchangeView(CouponSessionMixin, FormView):
 
     @cached_property
     def provider(self):
-        return get_object_or_404(Provider, id=self.kwargs["provider"])
+        return get_object_or_404(
+            Provider,
+            Q(id=self.kwargs["provider"]) & ~Q(forbidden_for_coupons=self.coupon),
+        )
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         ctx = super().get_context_data(**kwargs)
