@@ -24,6 +24,12 @@ class GenerateCouponForm(AdminActionForm):
         label="Počet poukážok", help_text="Tlačia sa 3 poukážky na stranu"
     )
     expires_at = forms.DateField(label="Expirácia poukážok")
+    forbidden_providers = forms.ModelMultipleChoiceField(
+        queryset=Provider.objects.all(),
+        label="Zakázaní poskytovatelia",
+        required=False,
+        help_text="Poukážka sa nebud dať vymeniť za poukážku od týchto poskytovateľov.",
+    )
 
 
 class BulkUpdateCouponForm(AdminActionForm):
@@ -61,10 +67,14 @@ class TrojstenCouponAdmin(
     )
     def generate_coupon(self, request, data):
         with transaction.atomic():
-            coupons = [
-                TrojstenCoupon.generate(data["amount"], data["expires_at"]).id
-                for _ in range(data["count"])
-            ]
+            coupons = []
+            for _ in range(data["count"]):
+                c = TrojstenCoupon.generate(
+                    data["amount"],
+                    data["expires_at"],
+                )
+                c.forbidden_providers.set(data["forbidden_providers"])
+                coupons.append(c.id)
 
         job: Job = generate_coupons_pdf.delay(coupons)  # type:ignore
         return HttpResponseRedirect(
